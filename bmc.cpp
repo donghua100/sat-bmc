@@ -2,6 +2,7 @@
 // Created by guishuo on 2021/10/24.
 //
 
+#include <cstdio>
 #include<iostream>
 #include<chrono>
 #include<ctime>
@@ -170,7 +171,7 @@ bool bmc(vector<int>&inputs,vector<int> &in_latch,vector<int> &inits,vector<int>
         {
             auto end = chrono::high_resolution_clock::now();
             chrono::duration<double> diff = end - start;
-            cout<<"find int "<<i<<"th step,using time "<<diff.count()<<" s"<<endl;
+            cout<<"find int "<<i<<"steps, using time "<<diff.count()<<" s"<<endl;
             for(int j = 1; j < cur_idx && j< 15; j++)
             {
                 cout<<j<<" = "<<(S->modelValue(j) == l_True)<<endl;
@@ -208,7 +209,7 @@ static void usage(int argc,char *argv[]){
 }
 
 static char *aigfile = NULL;
-static int kmax = 10;
+static int kmax = 1000;
 static int parser_args(int argc,char *argv[]){
 	if (argc < 2) usage(argc,argv);
 	const struct option table[] = {
@@ -217,7 +218,7 @@ static int parser_args(int argc,char *argv[]){
 		{0,0,NULL,0},
 	};
 	int o;
-	while((o = getopt_long(argc,argv,"f:-k",table,NULL))!=-1){
+	while((o = getopt_long(argc,argv,"f:-k:",table,NULL))!=-1){
 		switch(o){
 			case 'f':
 				aigfile=optarg;
@@ -239,6 +240,7 @@ int main(int argc,char *argv[])
     aiger *aig = NULL;
     aig = aiger_init();
     const char * path = aigfile;
+	printf("%s\n", path);
     const auto *error = aiger_open_and_read_from_file(aig, path);
     if(error) fprintf (stderr, "*** %s: %s\n", "<stdin>", error);
     vector<int> inputs,inits,bads,in_latch,out_latch;
