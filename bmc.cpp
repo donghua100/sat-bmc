@@ -105,20 +105,24 @@ bool bmc(vector<int>&inputs,vector<int> &in_latch,vector<int> &inits,vector<int>
         S->addClause(c);
         v_act.push(act);
     }
+	cout<<"Checking at 0 steps"<<endl;
     bool sat = S->solve(v_act);
     v_act.clear();
     if (sat)
     {
-        cout<<"find in init state!"<<endl;
-        for(int i = 1; i < cur_idx && i < 15; i++)
-        {
-            cout<<i<<" = "<<(S->modelValue(i) == l_True)<<endl;
-        }
+        auto end = chrono::high_resolution_clock::now();
+        chrono::duration<double> diff = end - start;
+        cout<<"find at "<<0<<" steps, using time "<<diff.count()<<" s"<<endl;
+        // for(int i = 1; i < cur_idx && i < 15; i++)
+        // {
+        //     cout<<i<<" = "<<(S->modelValue(i) == l_True)<<endl;
+        // }
         return true;
     }
     vector<vector<int>> input_at_time_t;
     for (int i = 1; i <= n; i++)
     {
+		cout<<"Checking at "<<i<<" steps"<<endl;
         update_cur2nxt();
         while (S->nVars()<=cur_idx) S->newVar();
         vector<int> new_in_latch;
@@ -171,24 +175,24 @@ bool bmc(vector<int>&inputs,vector<int> &in_latch,vector<int> &inits,vector<int>
         {
             auto end = chrono::high_resolution_clock::now();
             chrono::duration<double> diff = end - start;
-            cout<<"find int "<<i<<"steps, using time "<<diff.count()<<" s"<<endl;
-            for(int j = 1; j < cur_idx && j< 15; j++)
-            {
-                cout<<j<<" = "<<(S->modelValue(j) == l_True)<<endl;
-            }
-            cout<<"-----------------------------\n";
-            int t = 0;
-            for (auto &v :input_at_time_t)
-            {
-                t++;
-                cout<<"at time "<<t<<" : ";
-                for (auto x:v)
-                {
-
-                    cout<<x<<" = "<<(S->modelValue(x) == l_True)<<",";
-                }
-                cout<<endl;
-            }
+            cout<<"find at "<<i<<" steps, using time "<<diff.count()<<" s"<<endl;
+            // for(int j = 1; j < cur_idx && j< 15; j++)
+            // {
+            //     cout<<j<<" = "<<(S->modelValue(j) == l_True)<<endl;
+            // }
+            // cout<<"-----------------------------\n";
+            // int t = 0;
+            // for (auto &v :input_at_time_t)
+            // {
+            //     t++;
+            //     cout<<"at time "<<t<<" : ";
+            //     for (auto x:v)
+            //     {
+            //
+            //         cout<<x<<" = "<<(S->modelValue(x) == l_True)<<",";
+            //     }
+            //     cout<<endl;
+            // }
             return true;
         }
     }
